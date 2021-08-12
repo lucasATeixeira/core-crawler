@@ -1,6 +1,7 @@
 const p = require('puppeteer');
 const fs = require('fs');
 const cliProgress = require('cli-progress');
+const { v4: uuidv4 } = require('uuid');
 
 async function handleAnalysis({page, url}) {
   await page.goto(`https://${url}`, {
@@ -13,7 +14,7 @@ async function handleAnalysis({page, url}) {
     return a.href;
   })
 
-  const random = Math.floor(Math.random() * 100000);
+  const random = uuidv4();
   const path = `./screenshots/${random}.png`
   
   if (!redirectUrl) {

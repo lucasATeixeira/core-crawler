@@ -6,6 +6,7 @@
   "dependencies": {
     "cli-progress": "^3.9.0",
     "fastq": "^1.11.1",
-    "puppeteer": "^10.2.0"
+    "puppeteer": "^10.2.0",
+    "uuid": "^8.3.2"
   }
 }
