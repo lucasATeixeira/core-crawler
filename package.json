@@ -1,0 +1,11 @@
+{
+  "name": "robot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "cli-progress": "^3.9.0",
+    "fastq": "^1.11.1",
+    "puppeteer": "^10.2.0"
+  }
+}
