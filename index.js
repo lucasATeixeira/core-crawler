@@ -1,7 +1,6 @@
 const p = require('puppeteer');
 const fs = require('fs');
 const cliProgress = require('cli-progress');
-const { v4: uuidv4 } = require('uuid');
 
 async function handleAnalysis({page, url}) {
   await page.goto(`https://${url}`, {
@@ -14,12 +13,14 @@ async function handleAnalysis({page, url}) {
     return a.href;
   })
 
-  const random = uuidv4();
-  const path = `./screenshots/${random}.png`
+  // const path = `./screenshots/${index}.png`
   
   if (!redirectUrl) {
-    await page.screenshot({ path })
-    return `FALHA: Produto Fora de linha. ${random}.png`;
+    // await page.screenshot({ path })
+    return {
+      message: `FALHA: Produto Sem botão.`,
+      url: page.url()
+    };
   }
 
   await page.goto(redirectUrl, {
@@ -31,12 +32,18 @@ async function handleAnalysis({page, url}) {
   })
 
   if (pageIsOut) {
-    await page.screenshot({ path })
-    return `FALHA: Produto não foi encotrado. ${random}.png`
+    // await page.screenshot({ path })
+    return {
+      message: `FALHA: Cenário Oops!.`,
+      url: page.url()
+    }
   }
 
-  await page.screenshot({ path })
-  return `SUCESSO: ${redirectUrl} . ${random}.png`
+  // await page.screenshot({ path })
+  return {
+    message: `SUCESSO`,
+    url: page.url()
+  }
 }
 
 async function main() {
@@ -48,10 +55,10 @@ async function main() {
 
   const browser = await p.launch();
   const page = await browser.newPage();
-  page.setViewport({
-    width: 1920,
-    height: 1080
-  })
+  // page.setViewport({
+  //   width: 1920,
+  //   height: 1080
+  // })
 
   let done = 0;
   const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
@@ -59,8 +66,8 @@ async function main() {
 
   for (const url of data) {
     try {
-      const response = await handleAnalysis({ url, page });
-      fs.appendFileSync('./response.csv', `${url},${response}\n`)
+      const { message, url: responseUrl } = await handleAnalysis({ url, page });
+      fs.appendFileSync('./response.csv', `${url},${message},${responseUrl}\n`)
       bar.update(done + 1);
       done += 1;
     } catch (err) {
